@@ -8,17 +8,15 @@ This guide contains notes on setting up a development environment for data scien
 
 ### [Bash and Python](#bash-and-python-1)
 
-**Prerequisite: Windows 10 Anniversary Build 14393 or later**
-
-1. [(Optional) Install Cmder](#1-optional-install-cmder)
-2. [Install WSL](#2-install-wsl)
-3. [Install Anaconda](#3-install-anaconda)
+0. [(Optional) Install Cmder](#0-optional-install-cmder)
+1. [Install WSL](#1-install-wsl)
+2. [Install Anaconda](#2-install-anaconda)
    1. [Apply fix for Jupyter notebooks](#fix-jupyter-notebooks)
    2. [Apply fix for MKL](#fix-mkl)
-4. Install X Server for Windows
+3. Install X Server for Windows
    1. Apply fix for X
    2. Apply fix for dbus
-5. (Optional) Install Command Line power user features
+4. (Optional) Install Command Line power user features
    1. Install Oh My Zsh
    2. Configure .bashrc
    3. Configure .zshrc
@@ -38,9 +36,13 @@ This guide contains notes on setting up a development environment for data scien
 
 # Bash and Python
 
-### 1. (Optional) Install Cmder
+**Prerequisite: Windows 10 Anniversary Build 14393 or later**
+
+### 0. (Optional) Install Cmder
 
 Cmder is an excellent console emulator for Windows offering many features beyond what cmd provides. To name just a few, you'll benefit from color themes, tabs, and git integration.
+
+![cmder](https://github.com/joshpeng/Data-Science-On-WSL/raw/master/imgs/cmder.png)
 
 1. Go to [cmder.net](http://cmder.net)
 2. Select ```Download full```
@@ -55,11 +57,12 @@ Cmder is an excellent console emulator for Windows offering many features beyond
    1. Go to ```<Cmder Directory>\vendor\clink```
    2. Open ```clink_inputrc_base``` in Notepad
    3. Find and replace all ```M-C-u``` with ```"\033`b"```. There should be three instances.
-   4. Save and restart Cmder. Now press <kbd>Shift</kbd>+<kbd>Up</kbd> will navigate up in your directories
+   4. Save and restart Cmder. Now pressing <kbd>Shift</kbd>+<kbd>Up</kbd> will navigate up in your directories
 
-### 2. Install WSL
+### 1. Install WSL
 
 Follow Microsoft's installation guide [here](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide).
+Below are additional notes on WSL you should know about.
 
 - On the "Create a UNIX user" step, if you want root access you can create a user with ```root``` as the name. This will create your user as a superuser and will preclude you from needing to use ```sudo``` for any commands. 
 - If you mess up your WSL and wish to do a clean install, use the following commands in Cmder (not Bash):
@@ -72,11 +75,11 @@ Follow Microsoft's installation guide [here](https://msdn.microsoft.com/en-us/co
 - When in Windows, you can find the Linux file system at ```%AppData%\Local\lxss```. When in Bash, you can find the Windows file system at ```/mnt/c```.
   - Despite this, file interoperability is not supported. Linux files have information stored in their NTFS Extended Attributes that Windows can't create. If you try to edit them in Windows, those attributes might get stripped and become unusable in Linux also. For more information see the "Emulating Linux features" section in this [MSFT blog post](https://blogs.msdn.microsoft.com/wsl/2016/06/15/wsl-file-system-support/).
 
-### 3. Install Anaconda
+### 2. Install Anaconda
 
-Anaconda is the industry standard Python data science platform used by most people. It comes with a great selection of preinstalled packages as well as features to help you manage environments for multiple Python versions. Downloads are located at [https://www.continuum.io/downloads](https://www.continuum.io/downloads)
+Anaconda is a widely used Python-based data science platform. It comes with a large selection of preinstalled packages as well as features to help you manage environments for multiple Python versions. Downloads are located at [https://www.continuum.io/downloads](https://www.continuum.io/downloads).
 
-1. Open  Cmder and start bash
+1. Open Cmder and start bash
 
 2. Choose if you want to use Python 2.7 or 3.5 with one of the following commands (Anaconda2 for 2.7, Anaconda3 for 3.5):
 
@@ -94,7 +97,7 @@ Anaconda is the industry standard Python data science platform used by most peop
 
 #### Fix Jupyter notebooks
 
-In Windows 10 Build 14393, there is a bug with libzmq that is apparently fixed in later Insider Builds. For now though, we will need to do the following command in bash:
+In Windows 10 Build 14393, there is an issue with libzmq that is apparently fixed in later Insider Builds. For now though, we will need to do the following command in bash:
 
 ```
 conda install -c jzuhone zeromq=4.1.dev0
@@ -104,7 +107,7 @@ This patches zeromq to work with WSL. For more information about the issue see [
 
 #### Fix MKL
 
-On Windows 10 Build 14393, the Ubuntu version is 14.04 which unfortunately doesn't support MKL optimizations yet. If you upgrade to Insider Builds that are using Ubuntu 16.04, those do support MKL, but for now, we will need to uninstall MKL and reinstall regular versions of the following packages:
+In Windows 10 Build 14393, the Ubuntu version is 14.04 which unfortunately doesn't support MKL optimizations yet. If you upgrade to Insider Builds that are using Ubuntu 16.04, those do support MKL, but for now, we will need to uninstall MKL and reinstall regular versions of the following packages:
 
 - NumPy
 - NumExpr
