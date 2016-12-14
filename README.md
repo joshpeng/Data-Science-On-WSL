@@ -8,15 +8,14 @@ This guide contains notes on setting up a development environment for data scien
 
 ### [Bash and Python](#bash-and-python-1)
 
-0. [(Optional) Install Cmder](#0-optional-install-cmder)
-1. [Install WSL](#1-install-wsl)
-2. [Install Anaconda](#2-install-anaconda)
+1. [(Optional) Install Cmder](#1-optional-install-cmder)
+2. [Install WSL](#2-install-wsl)
+3. [Install Anaconda](#3-install-anaconda)
    1. [Apply fix for Jupyter notebooks](#fix-jupyter-notebooks)
    2. [Apply fix for MKL](#fix-mkl)
-3. Install X Server for Windows
-   1. Apply fix for X
-   2. Apply fix for dbus
-4. (Optional) Install Command Line power user features
+4. [Install X Server for Windows](#4-install-x-server-for-windows)
+   1. [Configure X and apply fix for dbus](#configure-x-and-fix-dbus)
+5. (Optional) Install Command Line power user features
    1. Install Oh My Zsh
    2. Configure .bashrc
    3. Configure .zshrc
@@ -38,11 +37,10 @@ This guide contains notes on setting up a development environment for data scien
 
 **Prerequisite: Windows 10 Anniversary Build 14393 or later**
 
-### 0. (Optional) Install Cmder
+### 1. (Optional) Install Cmder
+![cmder](https://github.com/joshpeng/Data-Science-On-WSL/raw/master/imgs/cmder.png)
 
 Cmder is an excellent console emulator for Windows offering many features beyond what cmd provides. To name just a few, you'll benefit from color themes, tabs, and git integration.
-
-![cmder](https://github.com/joshpeng/Data-Science-On-WSL/raw/master/imgs/cmder.png)
 
 1. Go to [cmder.net](http://cmder.net)
 2. Select ```Download full```
@@ -59,7 +57,9 @@ Cmder is an excellent console emulator for Windows offering many features beyond
    3. Find and replace all ```M-C-u``` with ```"\033`b"```. There should be three instances.
    4. Save and restart Cmder. Now pressing <kbd>Shift</kbd>+<kbd>Up</kbd> will navigate up in your directories
 
-### 1. Install WSL
+### 2. Install WSL
+
+<img src="http://www.monsterblog.biz/wp-content/uploads/2016/10/windows-vs-ubuntu.png" width="400">
 
 Follow Microsoft's installation guide [here](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide).
 Below are additional notes on WSL you should know about.
@@ -75,12 +75,14 @@ Below are additional notes on WSL you should know about.
 - When in Windows, you can find the Linux file system at ```%AppData%\Local\lxss```. When in Bash, you can find the Windows file system at ```/mnt/c```.
   - Despite this, file interoperability is not supported. Linux files have information stored in their NTFS Extended Attributes that Windows can't create. If you try to edit them in Windows, those attributes might get stripped and become unusable in Linux also. For more information see the "Emulating Linux features" section in this [MSFT blog post](https://blogs.msdn.microsoft.com/wsl/2016/06/15/wsl-file-system-support/).
 
-### 2. Install Anaconda
+### 3. Install Anaconda
+
+<img src="https://www.continuum.io/sites/all/themes/continuum/assets/images/logos/logo-horizontal-large.svg" width="500">
+
 
 Anaconda is a widely used Python-based data science platform. It comes with a large selection of preinstalled packages as well as features to help you manage environments for multiple Python versions. Downloads are located at [https://www.continuum.io/downloads](https://www.continuum.io/downloads).
 
 1. Open Cmder and start bash
-
 2. Choose if you want to use Python 2.7 or 3.5 with one of the following commands (Anaconda2 for 2.7, Anaconda3 for 3.5):
 
    ```
@@ -107,7 +109,7 @@ This patches zeromq to work with WSL. For more information about the issue see [
 
 #### Fix MKL
 
-In Windows 10 Build 14393, the Ubuntu version is 14.04 which unfortunately doesn't support MKL optimizations yet. If you upgrade to Insider Builds that are using Ubuntu 16.04, those do support MKL, but for now, we will need to uninstall MKL and reinstall regular versions of the following packages:
+In Windows 10 Build 14393, the Ubuntu version is 14.04 which unfortunately doesn't support [MKL](https://software.intel.com/en-us/intel-mkl) optimizations yet. If you upgrade to Insider Builds that are using Ubuntu 16.04, those do support MKL, but for now, we will need to uninstall MKL and reinstall regular versions of the following packages:
 
 - NumPy
 - NumExpr
@@ -122,3 +124,39 @@ conda remove mkl mkl-service
 ```
 
 For more information about MKL, see [here](https://docs.continuum.io/mkl-optimizations/#uninstalling-mkl).
+
+### 4. Install X client for Windows 
+![vcxsrv](https://chocolatey.org/content/packageimages/vcxsrv.1.18.3.0.png)
+
+Linux uses [X Window System](https://en.wikipedia.org/wiki/X_Window_System) which uses a server-client model to display GUI applications. In order for us to view these applications on Windows, we will need a X client capable of receiving the communication coming from our Linux's X server.
+
+There are two main options we can choose from: [VcXsrv](https://sourceforge.net/projects/vcxsrv/) and [Xming](https://sourceforge.net/projects/xming/). Choose whichever one you like. If you run into issues displaying applications in one, try the other. We will use VcXsrv in this guide since some users are reporting Xming to be a bit slower.
+
+1. Download [VcXsrv](https://sourceforge.net/projects/vcxsrv/)
+2. Install and run VcXsrv
+3. (Optional) Add VcXsrv as a service so you don't have to manually start it every time
+
+#### Configure X and fix dbus
+
+We will need to configure Linux to send X communication to where our Windows' X client is listening at.
+
+1. Open bash
+2. Type the following command:
+
+   ```
+   echo "export DISPLAY=localhost:0.0" >> ~/.bashrc
+   ```
+   This is enough to launch X applications to our X client, but many applications will still perform poorly or crash. This happens because Windows 10 Build 14393 does not fully support Unix sockets yet. Later Insider Builds are said to have this fixed already as well.
+3. Type the following to change dbus into using TCP instead of Unix sockets:
+
+   ```
+   sudo sed -i 's$<listen>.*</listen>$<listen>tcp:host=localhost,port=0</listen>$' /etc/dbus-1/session.conf
+   ```
+4. To test if this is working we can install and run [Sublime Text](https://www.sublimetext.com/) from Linux. You may need to restart your bash if it doesn't work right away.
+
+   ```
+   sudo add-apt-repository ppa:webupd8team/sublime-text-3
+   sudo apt-get update
+   sudo apt-get install sublime-text-installer
+   subl
+   ```
