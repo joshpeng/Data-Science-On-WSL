@@ -1,6 +1,3 @@
-
-  <img />
-</p>
 # (WIP) Data Science On WSL
 
 This guide contains notes on setting up a development environment for data science in Windows 10's new ***Windows Subsystem for Linux (WSL)*** aka ***Bash on Ubuntu on Windows***.
@@ -24,11 +21,10 @@ This guide contains notes on setting up a development environment for data scien
    3. [Configure Cmder startup tasks](#configure-cmder-startup-tasks)
 
 
-### Node and Web Dev
+### [Node and Web Dev](#node-and-web-dev-1)
 
-1. Install nvm
-2. Install latest node LTS
-3. Known issues/limitations
+1. [Install node](#1-install-node)
+2. [Known issues/limitations](#2-known-issueslimitations)
 
 
 
@@ -106,7 +102,7 @@ In Windows 10 Build 14393, there is an issue with libzmq that is apparently fixe
 conda install -c jzuhone zeromq=4.1.dev0
 ```
 
-This patches zeromq to work with WSL. For more information about the issue see [here](https://github.com/Microsoft/BashOnWindows/issues/185).
+This patches zeromq to work with WSL. If this step is not done, the kernel will keep dying whenever you view a Jupyter notebook resulting in an inability to execute code cells. For more information about this issue, see [here](https://github.com/Microsoft/BashOnWindows/issues/185).
 
 #### Fix MKL
 
@@ -122,6 +118,21 @@ Use the following command in bash:
 ```
 conda install nomkl numpy scipy scikit-learn numexpr
 conda remove mkl mkl-service
+```
+
+To test if this is working:
+
+```
+python
+import scipy
+scipy.test()
+```
+
+It should no longer generate the following errors:
+
+```
+OMP: Error \#100: Fatal system error detected.
+OMP: System error \#22: Invalid argument
 ```
 
 For more information about MKL, see [here](https://docs.continuum.io/mkl-optimizations/#uninstalling-mkl).
@@ -261,3 +272,48 @@ Many Zsh themes use custom characters to display symbols like git branches. To h
    ```
 
 7. (Optional) Go to Startup tab and change ```Specified named task``` to ```{Bash on Ubuntu}```
+
+
+
+# Node and Web Dev
+
+### 1. Install node
+<p align="center"><img src="https://nodejs.org/static/images/logos/nodejs-new-pantone-black.png" width="300"></p>
+
+With how dominant node.js is in web development these days, it is important to get this working on WSL. We can use [node version manager (nvm)](https://github.com/creationix/nvm) to handle differing version requirements we may have too.
+
+1. Open Bash and install the prerequisites for nvm with the following commands
+
+   ```
+   sudo apt-get update
+   sudo apt-get install build-essential
+   sudo apt-get install libssl-dev
+   ```
+
+2. Install nvm with curl
+
+   ```
+   curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash
+   ```
+
+   If you prefer wget you can use this command:
+
+   ```
+   wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash
+   ```
+
+3. Install and use latest node LTS
+
+   ```
+   nvm install --lts
+   nvm use --lts
+   ```
+
+### 2. Known Issues/Limitations
+
+Not everything in the web development world works properly with WSL yet. The following is an incomplete list of some items I've personally ran into.
+
+| Item                                   | Version | Issue                                    |
+| -------------------------------------- | ------- | ---------------------------------------- |
+| [Meteor](https://www.meteor.com/)      | 1.4.2.3 | Unable to establish connections to MongoDB when starting projects |
+| [docpress](http://docpress.github.io/) | 0.7.1   | Unable to build static site. Issue discussion found [here](https://github.com/docpress/docpress/issues/169#issuecomment-257766560). |
