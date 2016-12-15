@@ -21,7 +21,7 @@ This guide contains notes on setting up a development environment for data scien
 5. [(Optional) Install Command Line power user features](#5-optional-install-command-line-power-user-features)
    1. [Install Oh My Zsh](#install-oh-my-zsh)
    2. [Install Powerline compatible fonts](#install-powerline-compatible-fonts)
-   3. Configure Cmder startup tasks
+   3. [Configure Cmder startup tasks](#configure-cmder-startup-tasks)
 
 
 ### Node and Web Dev
@@ -237,3 +237,27 @@ Many Zsh themes use custom characters to display symbols like git branches. To h
 4. Press <kbd>Win</kbd>+<kbd>Alt</kbd>+<kbd>P</kbd> to bring up the ```Settings``` screen
 5. Change ```Main console font``` to your Powerline font.
 6. Press ```Save settings```
+
+#### Configure Cmder startup tasks
+
+1. From Cmder's ```Settings``` screen, go to the Startup --> Tasks tab
+
+2. Press ```+```
+
+3. Name the group ```Bash on Ubuntu```
+
+4. (Optional) Check the box ```Default task for new console```
+
+5. Fill in the following for ```Task parameters```:
+
+   ```
+   -icon %USERPROFILE%\AppData\Local\lxss\bash.ico"
+   ```
+
+6. Fill in the following for the task command:
+
+   ```
+   %windir%\system32\bash.exe
+   ```
+
+7. (Optional) Go to Startup tab and change ```Specified named task``` to ```{Bash on Ubuntu}```
