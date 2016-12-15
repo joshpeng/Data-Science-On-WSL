@@ -1,4 +1,4 @@
-# (WIP) Data Science On WSL
+# Data Science On WSL
 
 This guide contains notes on setting up a development environment for data science in Windows 10's new ***Windows Subsystem for Linux (WSL)*** aka ***Bash on Ubuntu on Windows***.
 
@@ -70,7 +70,7 @@ Below are additional notes on WSL you should know about.
 
 - File permissions are handled separately by both Windows and Linux. See [here](https://msdn.microsoft.com/en-us/commandline/wsl/user_support) for more information. You may want to run Cmder as administrator. If you want to always run Cmder as admin, you can do so by right-clicking its .exe file and selecting the option in its properties.
 - When in Windows, you can find the Linux file system at ```%AppData%\Local\lxss```. When in Bash, you can find the Windows file system at ```/mnt/c```.
-  - Despite this, file interoperability is not supported. Linux files have information stored in their NTFS Extended Attributes that Windows can't create. If you try to edit them in Windows, those attributes might get stripped and become unusable in Linux also. For more information see the "Emulating Linux features" section in this [MSFT blog post](https://blogs.msdn.microsoft.com/wsl/2016/06/15/wsl-file-system-support/).
+  - Despite this, file interoperability is not supported. Linux files have information stored in their NTFS Extended Attributes that Windows can't create. If you try to edit them in Windows, those attributes might get stripped and become unusable in Linux also. **Very important read** on what you can and cannot do [here](https://blogs.msdn.microsoft.com/commandline/2016/11/17/do-not-change-linux-files-using-windows-apps-and-tools/).
 
 ### 3. Install Anaconda
 
