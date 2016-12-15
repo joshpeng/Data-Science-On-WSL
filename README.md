@@ -5,7 +5,7 @@
 
 This guide contains notes on setting up a development environment for data science in Windows 10's new ***Windows Subsystem for Linux (WSL)*** aka ***Bash on Ubuntu on Windows***.
 
-![wsl](https://github.com/joshpeng/Data-Science-On-WSL/raw/master/imgs/wsl.png)
+<p align="center"><img src="https://github.com/joshpeng/Data-Science-On-WSL/raw/master/imgs/wsl.png"></p>
 
 # Table of Contents
 
@@ -39,7 +39,7 @@ This guide contains notes on setting up a development environment for data scien
 **Prerequisite: Windows 10 Anniversary Build 14393 or later**
 
 ### 1. (Optional) Install Cmder
-![cmder](https://github.com/joshpeng/Data-Science-On-WSL/raw/master/imgs/cmder.png)
+<p align="center"><img src="https://github.com/joshpeng/Data-Science-On-WSL/raw/master/imgs/cmder.png"></p>
 
 Cmder is an excellent console emulator for Windows offering many features beyond what cmd provides. To name just a few, you'll benefit from color themes, tabs, and git integration.
 
@@ -60,7 +60,7 @@ Cmder is an excellent console emulator for Windows offering many features beyond
 
 ### 2. Install WSL
 
-<img src="http://www.monsterblog.biz/wp-content/uploads/2016/10/windows-vs-ubuntu.png" width="400">
+<p align="center"><img src="http://www.monsterblog.biz/wp-content/uploads/2016/10/windows-vs-ubuntu.png" width="400"></p>
 
 Follow Microsoft's installation guide [here](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide).
 Below are additional notes on WSL you should know about.
@@ -127,7 +127,7 @@ conda remove mkl mkl-service
 For more information about MKL, see [here](https://docs.continuum.io/mkl-optimizations/#uninstalling-mkl).
 
 ### 4. Install X client for Windows 
-<p align="center">![vcxsrv](https://chocolatey.org/content/packageimages/vcxsrv.1.18.3.0.png)</p>
+<p align="center"><img src="https://chocolatey.org/content/packageimages/vcxsrv.1.18.3.0.png"></p>
 
 Linux uses [X Window System](https://en.wikipedia.org/wiki/X_Window_System) which uses a server-client model to display GUI applications. In order for us to view these applications on Windows, we will need a X client capable of receiving the communication coming from our Linux's X server.
 
@@ -168,7 +168,7 @@ Bash is great, but there are quite a few annoying nuances to it like tab complet
 
 #### Install Oh My Zsh
 
-![ohmyzsh](http://ohmyz.sh/img/OMZLogo_BnW.png)
+<p align="center"><img src="http://ohmyz.sh/img/OMZLogo_BnW.png"></p>
 
 1. Open Bash and install the prerequisites for Oh My Zsh with the following commands
    ```
