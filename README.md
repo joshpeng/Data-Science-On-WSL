@@ -1,3 +1,6 @@
+
+  <img />
+</p>
 # (WIP) Data Science On WSL
 
 This guide contains notes on setting up a development environment for data science in Windows 10's new ***Windows Subsystem for Linux (WSL)*** aka ***Bash on Ubuntu on Windows***.
@@ -13,14 +16,12 @@ This guide contains notes on setting up a development environment for data scien
 3. [Install Anaconda](#3-install-anaconda)
    1. [Apply fix for Jupyter notebooks](#fix-jupyter-notebooks)
    2. [Apply fix for MKL](#fix-mkl)
-4. [Install X Server for Windows](#4-install-x-server-for-windows)
+4. [Install X client for Windows](#4-install-x-client-for-windows)
    1. [Configure X and apply fix for dbus](#configure-x-and-fix-dbus)
-5. (Optional) Install Command Line power user features
-   1. Install Oh My Zsh
-   2. Configure .bashrc
-   3. Configure .zshrc
-   4. Install Powerline compatible fonts
-   5. Configure Cmder startup tasks
+5. [(Optional) Install Command Line power user features](#5-optional-install-command-line-power-user-features)
+   1. [Install Oh My Zsh](#install-oh-my-zsh)
+   2. [Install Powerline compatible fonts](#install-powerline-compatible-fonts)
+   3. Configure Cmder startup tasks
 
 
 ### Node and Web Dev
@@ -77,12 +78,12 @@ Below are additional notes on WSL you should know about.
 
 ### 3. Install Anaconda
 
-<img src="https://www.continuum.io/sites/all/themes/continuum/assets/images/logos/logo-horizontal-large.svg" width="500">
+<p align="center"><img src="https://www.continuum.io/sites/all/themes/continuum/assets/images/logos/logo-horizontal-large.svg" width="500"></p>
 
 
 Anaconda is a widely used Python-based data science platform. It comes with a large selection of preinstalled packages as well as features to help you manage environments for multiple Python versions. Downloads are located at [https://www.continuum.io/downloads](https://www.continuum.io/downloads).
 
-1. Open Cmder and start bash
+1. Open Cmder and type ```bash```
 2. Choose if you want to use Python 2.7 or 3.5 with one of the following commands (Anaconda2 for 2.7, Anaconda3 for 3.5):
 
    ```
@@ -126,7 +127,7 @@ conda remove mkl mkl-service
 For more information about MKL, see [here](https://docs.continuum.io/mkl-optimizations/#uninstalling-mkl).
 
 ### 4. Install X client for Windows 
-![vcxsrv](https://chocolatey.org/content/packageimages/vcxsrv.1.18.3.0.png)
+<p align="center">![vcxsrv](https://chocolatey.org/content/packageimages/vcxsrv.1.18.3.0.png)</p>
 
 Linux uses [X Window System](https://en.wikipedia.org/wiki/X_Window_System) which uses a server-client model to display GUI applications. In order for us to view these applications on Windows, we will need a X client capable of receiving the communication coming from our Linux's X server.
 
@@ -140,7 +141,7 @@ There are two main options we can choose from: [VcXsrv](https://sourceforge.net/
 
 We will need to configure Linux to send X communication to where our Windows' X client is listening at.
 
-1. Open bash
+1. Open Bash
 2. Type the following command:
 
    ```
@@ -160,3 +161,79 @@ We will need to configure Linux to send X communication to where our Windows' X 
    sudo apt-get install sublime-text-installer
    subl
    ```
+
+### 5. (Optional) Install Command Line power user features
+
+Bash is great, but there are quite a few annoying nuances to it like tab completion being case sensitive. To improve our productivity we can upgrade our CLI away from Bash to Zsh. To learn about some of the great Zsh features see [this blog post](http://code.joejag.com/2014/why-zsh.html). Those can then be further improved by using [Oh My Zsh](http://ohmyz.sh/).
+
+#### Install Oh My Zsh
+
+![ohmyzsh](http://ohmyz.sh/img/OMZLogo_BnW.png)
+
+1. Open Bash and install the prerequisites for Oh My Zsh with the following commands
+   ```
+   sudo apt-get update
+   sudo apt-get install zsh
+   sudo apt-get install git
+   ```
+
+2. Install Oh My Zsh with curl
+
+   ```
+   sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+   ```
+
+   If you prefer wget you can use this command:
+
+   ```
+   sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+   ```
+
+3. (Optional) Configure your Bash to use Zsh as the default shell on startup
+
+   1. Open ```.bashrc``` in your choice of editor
+
+      ```
+      vi ~/.bashrc
+      ```
+
+   2. Add this as a new line at the very bottom
+
+      ```
+      zsh
+      ```
+
+      Note: In the future if you end up further modifying your ```.bashrc```, you will want to check that the ```zsh``` line remains at the bottom. This ensures your full ```.bashrc``` file is processed before starting Zsh.
+
+   3. Restart Bash and it should automatically start Zsh
+
+4. (Optional) Configure your Oh My Zsh
+
+   1. Open ```.zshrc``` in your choice of editor
+
+      ```
+      vi ~/.zshrc
+      ```
+
+   2. To change the Zsh theme, change the ```ZSH_THEME``` line. I recommend the "agnoster" theme. More themes can be found [here](https://github.com/robbyrussell/oh-my-zsh/wiki/Themes).
+
+      ```
+      ZSH_THEME="agnoster"
+      ```
+
+   3. To add additional plugins, scroll down to the ```plugins=(git)``` line. This line is space-delimited so you can add whichever plugins you want inside the parenthesis. The list of default plugins can be found [here](https://github.com/robbyrussell/oh-my-zsh/wiki/Plugins).
+
+      ```
+      plugins=(git python sudo)
+      ```
+
+#### Install Powerline compatible fonts
+
+Many Zsh themes use custom characters to display symbols like git branches. To have these displayed properly in Cmder you will need to use a Powerline compatible font.
+
+1. Choose a font from this [GitHub repo](https://github.com/powerline/fonts). Font samples can be seen [here](https://github.com/powerline/fonts/blob/master/samples/All.md). I recommend "DejaVu Sans Mono".
+2. Download and install the font's .ttf files into Windows
+3. Open Cmder
+4. Press <kbd>Win</kbd>+<kbd>Alt</kbd>+<kbd>P</kbd> to bring up the ```Settings``` screen
+5. Change ```Main console font``` to your Powerline font.
+6. Press ```Save settings```
