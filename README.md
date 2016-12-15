@@ -2,7 +2,7 @@
 
 This guide contains notes on setting up a development environment for data science in Windows 10's new ***Windows Subsystem for Linux (WSL)*** aka ***Bash on Ubuntu on Windows***.
 
-<p align="center"><img src="https://github.com/joshpeng/Data-Science-On-WSL/raw/master/imgs/wsl.png"></p>
+<p align="center"><img src="https://github.com/joshpeng/Data-Science-On-WSL/raw/master/imgs/wsl.png" width="875"></p>
 
 # Table of Contents
 
@@ -106,21 +106,48 @@ This patches zeromq to work with WSL. If this step is not done, the kernel will 
 
 #### Fix MKL
 
-In Windows 10 Build 14393, the Ubuntu version is 14.04 which unfortunately doesn't support [MKL](https://software.intel.com/en-us/intel-mkl) optimizations yet. If you upgrade to Insider Builds that are using Ubuntu 16.04, those do support MKL, but for now, we will need to uninstall MKL and reinstall regular versions of the following packages:
-
-- NumPy
-- NumExpr
-- SciPy
-- Scikit-Learn
-
-Use the following command in bash:
+In Windows 10 Build 14393's Ubuntu 14.04, using [MKL](https://software.intel.com/en-us/intel-mkl) optimized packages (NumPy, NumExpr, SciPy, Scikit-Learn) results in the following errors:
 
 ```
-conda install nomkl numpy scipy scikit-learn numexpr
-conda remove mkl mkl-service
+OMP: Error \#100: Fatal system error detected.
+OMP: System error \#22: Invalid argument
 ```
 
-To test if this is working:
+This is caused by an [issue](https://github.com/Microsoft/BashOnWindows/issues/785) with WSL's use of the [Thread Affinity Interface](https://software.intel.com/en-us/node/522691). Luckily for us there are several possible workarounds/solutions.
+
+##### Workaround #1 - Disable Thread Affinity
+
+The community does not fully understand the implications of this workaround yet. However, the people using it have not reported any adverse side effects. If you run into issues consider using an alternative solution.
+
+1. Open Bash
+
+2. Type the following command to amend your .bashrc:
+
+   ```
+   echo "KMP_AFFINITY=disabled" >> ~/.bashrc
+   ```
+
+##### Workaround #2 - Disable MKL
+
+MKL is relatively new and you may not necessarily need it. You can switch Anaconda to use non-MKL package versions instead of the MKL ones. For more information on this, see [here](https://docs.continuum.io/mkl-optimizations/#uninstalling-mkl).
+
+1. Open Bash
+2. Use the following command:
+
+   ```
+   conda install nomkl numpy scipy scikit-learn numexpr
+   conda remove mkl mkl-service
+   ```
+
+Note: This workaround resolves Anaconda's MKL usage, but there may still be other packages you use that relies on MKL (especially it's LAPACK and BLAS). If those packages do not have a non-MKL variant then this option won't work for you.
+
+##### Solution #1 - Upgrade to Windows 10 Insider Build 14951 or above
+
+With Build 14951, WSL installs Ubuntu 16.04 instead of 14.04. This version supports MKL.
+
+##### Fix Verification
+
+After using one of the options above, you can verify the fix with the following:
 
 ```
 python
@@ -128,14 +155,7 @@ import scipy
 scipy.test()
 ```
 
-It should no longer generate the following errors:
-
-```
-OMP: Error \#100: Fatal system error detected.
-OMP: System error \#22: Invalid argument
-```
-
-For more information about MKL, see [here](https://docs.continuum.io/mkl-optimizations/#uninstalling-mkl).
+It should no longer generate the original OMP error messages.
 
 ### 4. Install X client for Windows 
 <p align="center"><img src="https://chocolatey.org/content/packageimages/vcxsrv.1.18.3.0.png"></p>
