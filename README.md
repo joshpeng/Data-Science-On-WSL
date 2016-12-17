@@ -13,6 +13,7 @@ This guide contains notes on setting up a development environment for data scien
 3. [Install Anaconda](#3-install-anaconda)
    1. [Apply fix for Jupyter notebooks](#fix-jupyter-notebooks)
    2. [Apply fix for MKL](#fix-mkl)
+   3. [Apply fix for Matplotlib](#fix-matplotlib)
 4. [Install X client for Windows](#4-install-x-client-for-windows)
    1. [Configure X and apply fix for dbus](#configure-x-and-fix-dbus)
 5. [(Optional) Install Command Line power user features](#5-optional-install-command-line-power-user-features)
@@ -156,6 +157,31 @@ scipy.test()
 ```
 
 It should no longer generate the original OMP error messages.
+
+#### Fix Matplotlib
+
+At the time of writing, Anaconda2 v4.2.0 installs ```Matplotlib 1.5.3-np111py27_0``` along with ```pyqt 5.6.0-py27_0``` and ```qt 5.6.0-0```. Unfortunately this version seems bugged and incapable of displaying plot graphs into X windows on WSL. To fix this we need to downgrade them.
+
+```
+conda install matplotlib=1.5.1
+```
+
+Don't forget to install the prerequisites for Matplotlib too:
+
+```
+sudo apt-get install libqtgui4
+```
+
+After following step 4 below on installing X client for Windows, you should be able to use Matplotlib plots.
+
+Note: From the X window, if you try to save a plot as an image, you may get the following:
+
+```
+QInotifyFileSystemWatcherEngine::addPaths: inotify_add_watch failed: Invalid argument
+QFileSystemWatcher: failed to add paths: /home/josh
+```
+
+This is [fixed](https://wpdev.uservoice.com/forums/266908-command-prompt-console-bash-on-ubuntu-on-windo/suggestions/13469097-support-for-filesystem-watchers-like-inotify) in Windows 10 Insiders Build 14942. For more information see [here](https://github.com/Microsoft/BashOnWindows/issues/216).
 
 ### 4. Install X client for Windows 
 <p align="center"><img src="https://chocolatey.org/content/packageimages/vcxsrv.1.18.3.0.png"></p>
