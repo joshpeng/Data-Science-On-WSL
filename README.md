@@ -33,7 +33,7 @@ This guide contains notes on setting up a development environment for data scien
 
 
 ## Quick Start
-Installs Anaconda, Oh My Zsh, and node. For more detailed information please see the rest of this guide.
+On Windows 10, after [installing WSL](#2-install-wsl), run the following commands in Bash. This installs Anaconda, Oh My Zsh, and node. For more detailed information please see the rest of this guide.
 
 ```shell
 sudo apt-get update
@@ -51,6 +51,8 @@ sudo apt-get install python-software-properties
 curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get install nodejs
 ```
+
+Remember to install [VcXsrv](https://sourceforge.net/projects/vcxsrv/) as your X client for Windows too.
 
 # Bash and Python
 
