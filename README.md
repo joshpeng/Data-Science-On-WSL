@@ -80,10 +80,10 @@ Below are additional notes on WSL you should know about.
 
 - On the "Create a UNIX user" step, if you want root access you can create a user with ```root``` as the name. This will create your user as a superuser and will preclude you from needing to use ```sudo``` for any commands. 
 - If you mess up your WSL and wish to do a clean install, use the following commands in Cmder (not Bash):
-   ```
+  ```shell
    lxrun /uninstall /full
    lxrun /install
-   ```
+  ```
 
 - File permissions are handled separately by both Windows and Linux. See [here](https://msdn.microsoft.com/en-us/commandline/wsl/user_support) for more information. You may want to run Cmder as administrator. If you want to always run Cmder as admin, you can do so by right-clicking its .exe file and selecting the option in its properties.
 - When in Windows, you can find the Linux file system at ```%AppData%\Local\lxss```. When in Bash, you can find the Windows file system at ```/mnt/c```.
@@ -99,13 +99,13 @@ Anaconda is a widely used Python-based data science platform. It comes with a la
 1. Open Cmder and type ```bash```
 2. Choose if you want to use Python 2.7 or 3.5 with one of the following commands (Anaconda2 for 2.7, Anaconda3 for 3.5):
 
-   ```
+   ```shell
    wget https://repo.continuum.io/archive/Anaconda2-4.2.0-Linux-x86_64.sh
    wget https://repo.continuum.io/archive/Anaconda3-4.2.0-Linux-x86_64.sh
    ```
 
 3. After the download completes, install via one of the following commands:
-   ```
+   ```shell
    bash Anaconda2-4.2.0-Linux-x86_64.sh
    bash Anaconda3-4.2.0-Linux-x86_64.sh
    ```
@@ -115,7 +115,7 @@ Anaconda is a widely used Python-based data science platform. It comes with a la
 
 In Windows 10 Build 14393, there is an issue with libzmq that is apparently fixed in later Insider Builds. For now though, we will need to do the following command in bash:
 
-```
+```shell
 conda install -c jzuhone zeromq=4.1.dev0
 ```
 
@@ -140,8 +140,8 @@ The community does not fully understand the implications of this workaround yet.
 
 2. Type the following command to amend your .bashrc:
 
-   ```
-   echo "KMP_AFFINITY=disabled" >> ~/.bashrc
+   ```shell
+   echo "export KMP_AFFINITY=disabled" >> ~/.bashrc
    ```
 
 ##### Workaround #2 - Disable MKL
@@ -151,7 +151,7 @@ MKL is relatively new and you may not necessarily need it. You can switch Anacon
 1. Open Bash
 2. Use the following command:
 
-   ```
+   ```shell
    conda install nomkl numpy scipy scikit-learn numexpr
    conda remove mkl mkl-service
    ```
@@ -178,13 +178,13 @@ It should no longer generate the original OMP error messages.
 
 At the time of writing, Anaconda2 v4.2.0 installs ```Matplotlib 1.5.3-np111py27_0``` along with ```pyqt 5.6.0-py27_0``` and ```qt 5.6.0-0```. Unfortunately this version seems bugged and incapable of displaying plot graphs into X windows on WSL. To fix this we need to downgrade them.
 
-```
+```shell
 conda install matplotlib=1.5.1
 ```
 
 Don't forget to install the prerequisites for Matplotlib too:
 
-```
+```shell
 sudo apt-get install libqtgui4
 ```
 
@@ -217,18 +217,18 @@ We will need to configure Linux to send X communication to where our Windows' X 
 1. Open Bash
 2. Type the following command:
 
-   ```
+   ```shell
    echo "export DISPLAY=localhost:0.0" >> ~/.bashrc
    ```
    This is enough to launch X applications to our X client, but many applications will still perform poorly or crash. This happens because Windows 10 Build 14393 does not fully support Unix sockets yet. Later Insider Builds are said to have this fixed already as well.
 3. Type the following to change dbus into using TCP instead of Unix sockets:
 
-   ```
+   ```shell
    sudo sed -i 's$<listen>.*</listen>$<listen>tcp:host=localhost,port=0</listen>$' /etc/dbus-1/session.conf
    ```
 4. To test if this is working we can install and run [Sublime Text](https://www.sublimetext.com/) from Linux. You may need to restart your bash if it doesn't work right away.
 
-   ```
+   ```shell
    sudo add-apt-repository ppa:webupd8team/sublime-text-3
    sudo apt-get update
    sudo apt-get install sublime-text-installer
@@ -244,20 +244,20 @@ Bash is great, but there are quite a few annoying nuances to it like tab complet
 <p align="center"><img src="http://ohmyz.sh/img/OMZLogo_BnW.png"></p>
 
 1. Open Bash and install the prerequisites for Oh My Zsh with the following commands
-   ```
+   ```shell
    sudo apt-get update
    sudo apt-get install zsh git
    ```
 
 2. Install Oh My Zsh with curl
 
-   ```
+   ```shell
    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
    ```
 
    If you prefer wget you can use this command:
 
-   ```
+   ```shell
    sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
    ```
 
@@ -265,7 +265,7 @@ Bash is great, but there are quite a few annoying nuances to it like tab complet
 
    1. Open ```.bashrc``` in your choice of editor
 
-      ```
+      ```shell
       vi ~/.bashrc
       ```
 
@@ -283,7 +283,7 @@ Bash is great, but there are quite a few annoying nuances to it like tab complet
 
    1. Open ```.zshrc``` in your choice of editor
 
-      ```
+      ```shell
       vi ~/.zshrc
       ```
 
@@ -341,11 +341,35 @@ Many Zsh themes use custom characters to display symbols like git branches. To h
 ### 1. Install node
 <p align="center"><img src="https://nodejs.org/static/images/logos/nodejs-new-pantone-black.png" width="300"></p>
 
-With how dominant node.js is in web development these days, it is important to get this working on WSL. We can use [node version manager (nvm)](https://github.com/creationix/nvm) to handle differing version requirements we may have too.
+With how dominant node.js is in web development these days, it is important to get this working on WSL.
+
+1. Open Bash and add the official Node.js PPA
+
+   ```shell
+   sudo apt-get install python-software-properties
+   curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+   ```
+
+2. Install node
+
+   ```shell
+   sudo apt-get install nodejs
+   ```
+
+3. Test node and npm versions
+
+   ```bash
+   node -v
+   npm -v
+   ```
+
+#### (Optional) nvm
+
+If you need multiple versions of node, use these [node version manager (nvm)](https://github.com/creationix/nvm) instructions.
 
 1. Open Bash and install the prerequisites for nvm with the following commands
 
-   ```
+   ```shell
    sudo apt-get update
    sudo apt-get install build-essential
    sudo apt-get install libssl-dev
@@ -353,19 +377,28 @@ With how dominant node.js is in web development these days, it is important to g
 
 2. Install nvm with curl
 
-   ```
+   ```shell
    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash
    ```
 
    If you prefer wget you can use this command:
 
-   ```
+   ```shell
    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash
    ```
 
-3. Install and use latest node LTS
+3. If using Zsh, you'll need to add the command to your ```.zshrc```
 
    ```
+   export NVM_DIR="/home/josh/.nvm"
+   [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+   ```
+
+   Replace ```josh``` with your own username.
+
+4. Install and use latest node LTS
+
+   ```shell
    nvm install --lts
    nvm use --lts
    ```
@@ -376,6 +409,7 @@ Not everything in the web development world works properly with WSL yet. The fol
 
 | Item                                   | Version | Issue                                    |
 | -------------------------------------- | ------- | ---------------------------------------- |
+| nvm                                    | any     | Slow shell loading especially when a default node version is set. See discussion [here](https://github.com/creationix/nvm/issues/860). Not related to WSL per se. |
 | FileSystem watch                       | any     | Any node watch features will fail because inotify is not implemented on Build 14393. [Fixed](https://wpdev.uservoice.com/forums/266908-command-prompt-console-bash-on-ubuntu-on-windo/suggestions/13469097-support-for-filesystem-watchers-like-inotify) in Build 14942. |
 | [Meteor](https://www.meteor.com/)      | 1.4.2.3 | Unable to establish connections to MongoDB when starting projects |
 | [docpress](http://docpress.github.io/) | 0.7.1   | Unable to build static site. Issue discussion found [here](https://github.com/docpress/docpress/issues/169#issuecomment-257766560). |
