@@ -6,6 +6,8 @@ This guide contains notes on setting up a development environment for data scien
 
 # Table of Contents
 
+### [Quick Start](#quick-start)
+
 ### [Bash and Python](#bash-and-python-1)
 
 1. [(Optional) Install Cmder](#1-optional-install-cmder)
@@ -30,6 +32,25 @@ This guide contains notes on setting up a development environment for data scien
 
 
 
+## Quick Start
+Installs Anaconda, Oh My Zsh, and node. For more detailed information please see the rest of this guide.
+
+```shell
+sudo apt-get update
+wget https://repo.continuum.io/archive/Anaconda2-4.2.0-Linux-x86_64.sh
+bash Anaconda2-4.2.0-Linux-x86_64.sh
+conda install -c jzuhone zeromq=4.1.dev0
+conda install matplotlib=1.5.1
+sudo apt-get install zsh git libqtgui4
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+echo "export KMP_AFFINITY=disabled" >> ~/.bashrc
+echo "export DISPLAY=localhost:0.0" >> ~/.bashrc
+echo "zsh" >> ~/.bashrc
+sudo sed -i 's$<listen>.*</listen>$<listen>tcp:host=localhost,port=0</listen>$' /etc/dbus-1/session.conf
+sudo apt-get install python-software-properties
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+sudo apt-get install nodejs
+```
 
 # Bash and Python
 
