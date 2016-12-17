@@ -41,19 +41,35 @@ This guide contains notes on setting up a development environment for data scien
 Cmder is an excellent console emulator for Windows offering many features beyond what cmd provides. To name just a few, you'll benefit from color themes, tabs, and git integration.
 
 1. Go to [cmder.net](http://cmder.net)
+
 2. Select ```Download full```
+
 3. Extract somewhere convenient
+
 4. (Optional) Add the Cmder directory to your PATH variable to allow for quick launch from the Start Menu
    1. Press <kbd>Win</kbd>
    2. Type ```environment``` and select ```Edit the system environment variables```
    3. Click ```Environment Variables```
    4. Select ```Path``` entry under the ```System variables``` section and press ```Edit...```
    5. Click ```New``` to add your Cmder directory and press ```OK``` when done
+
 5. Apply fix for <kbd>Shift</kbd>+<kbd>Up</kbd> hot key
    1. Go to ```<Cmder Directory>\vendor\clink```
    2. Open ```clink_inputrc_base``` in Notepad
    3. Find and replace all ```M-C-u``` with ```"\033`b"```. There should be three instances.
    4. Save and restart Cmder. Now pressing <kbd>Shift</kbd>+<kbd>Up</kbd> will navigate up in your directories
+
+6. Apply fix for up/down arrow keys for command history in Bash
+
+   1. Go to ```<Cmder Directory>\config```
+
+   2. Open ```user-aliases.cmd``` in Notepad
+
+   3. Add this as a new line at the bottom:
+
+      ```
+      bash=bash -cur_console:p
+      ```
 
 ### 2. Install WSL
 
@@ -172,7 +188,7 @@ Don't forget to install the prerequisites for Matplotlib too:
 sudo apt-get install libqtgui4
 ```
 
-After following step 4 below on installing X client for Windows, you should be able to use Matplotlib plots.
+After following steps for [installing X client on Windows](#4-install-x-client-for-windows), you should be able to use Matplotlib plots.
 
 Note: From the X window, if you try to save a plot as an image, you may get the following:
 
@@ -230,8 +246,7 @@ Bash is great, but there are quite a few annoying nuances to it like tab complet
 1. Open Bash and install the prerequisites for Oh My Zsh with the following commands
    ```
    sudo apt-get update
-   sudo apt-get install zsh
-   sudo apt-get install git
+   sudo apt-get install zsh git
    ```
 
 2. Install Oh My Zsh with curl
@@ -361,5 +376,6 @@ Not everything in the web development world works properly with WSL yet. The fol
 
 | Item                                   | Version | Issue                                    |
 | -------------------------------------- | ------- | ---------------------------------------- |
+| FileSystem watch                       | any     | Any node watch features will fail because inotify is not implemented on Build 14393. [Fixed](https://wpdev.uservoice.com/forums/266908-command-prompt-console-bash-on-ubuntu-on-windo/suggestions/13469097-support-for-filesystem-watchers-like-inotify) in Build 14942. |
 | [Meteor](https://www.meteor.com/)      | 1.4.2.3 | Unable to establish connections to MongoDB when starting projects |
 | [docpress](http://docpress.github.io/) | 0.7.1   | Unable to build static site. Issue discussion found [here](https://github.com/docpress/docpress/issues/169#issuecomment-257766560). |
