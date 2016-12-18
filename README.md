@@ -6,7 +6,7 @@ This guide contains notes on setting up a development environment for data scien
 
 # Table of Contents
 
-### [Quick Start](#quick-start)
+### [Quick Start](#quick-start-1)
 
 ### [Bash and Python](#bash-and-python-1)
 
@@ -52,7 +52,7 @@ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get install nodejs
 ```
 
-Remember to install [VcXsrv](https://sourceforge.net/projects/vcxsrv/) as your X client for Windows too.
+Remember to install [VcXsrv](https://sourceforge.net/projects/vcxsrv/) as your X client for Windows and restart your Bash for your changes to take effect.
 
 # Bash and Python
 
