@@ -1,5 +1,7 @@
 # Data Science On WSL
 
+**Prerequisite: Windows 10 Build 14393 or later**
+
 This guide contains notes on setting up a development environment for data science in Windows 10's new ***Windows Subsystem for Linux (WSL)*** aka ***Bash on Ubuntu on Windows***.
 
 <p align="center"><img src="https://github.com/joshpeng/Data-Science-On-WSL/raw/master/imgs/wsl.png" width="875"></p>
@@ -16,7 +18,7 @@ This guide contains notes on setting up a development environment for data scien
    1. [Apply fix for Jupyter notebooks](#fix-jupyter-notebooks)
    2. [Apply fix for MKL](#fix-mkl)
    3. [Apply fix for Matplotlib](#fix-matplotlib)
-4. [Install X client for Windows](#4-install-x-client-for-windows)
+4. [Install X server for Windows](#4-install-x-server-for-windows)
    1. [Configure X and apply fix for dbus](#configure-x-and-fix-dbus)
 5. [(Optional) Install Command Line power user features](#5-optional-install-command-line-power-user-features)
    1. [Install Oh My Zsh](#install-oh-my-zsh)
@@ -32,18 +34,16 @@ This guide contains notes on setting up a development environment for data scien
 
 
 
-## Quick Start
-On Windows 10, after [installing WSL](#2-install-wsl), run the following commands in Bash. This installs Anaconda, Oh My Zsh, and node. For more detailed information please see the rest of this guide.
+# Quick Start
+After [installing WSL](#2-install-wsl) and installing [VcXsrv](https://sourceforge.net/projects/vcxsrv/) as your X server, run the following commands in Bash. This installs Anaconda, Oh My Zsh, and node. For more detailed information on these fixes, please see the rest of this guide.
 
 ```shell
 sudo apt-get update
 wget https://repo.continuum.io/archive/Anaconda2-4.2.0-Linux-x86_64.sh
 bash Anaconda2-4.2.0-Linux-x86_64.sh
-conda install -c jzuhone zeromq=4.1.dev0
 conda install matplotlib=1.5.1
-sudo apt-get install zsh git libqtgui4
+sudo apt-get install zsh git libqtgui4 xserver-xorg-video-dummy
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-echo "export KMP_AFFINITY=disabled" >> ~/.bashrc
 echo "export DISPLAY=localhost:0.0" >> ~/.bashrc
 echo "zsh" >> ~/.bashrc
 sudo sed -i 's$<listen>.*</listen>$<listen>tcp:host=localhost,port=0</listen>$' /etc/dbus-1/session.conf
@@ -52,11 +52,21 @@ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get install nodejs
 ```
 
-Remember to install [VcXsrv](https://sourceforge.net/projects/vcxsrv/) as your X client for Windows and restart your Bash for your changes to take effect.
+For Insider Build users, congratulations. You are set.
+
+For Anniversary Build 14393 users, please apply this fix:
+
+```shell
+conda install -c jzuhone zeromq=4.1.dev0
+```
+
+Then open up .bashrc and add this line above the `zsh` line.
+
+```
+export KMP_AFFINITY=disabled
+```
 
 # Bash and Python
-
-**Prerequisite: Windows 10 Anniversary Build 14393 or later**
 
 ### 1. (Optional) Install Cmder
 <p align="center"><img src="https://github.com/joshpeng/Data-Science-On-WSL/raw/master/imgs/cmder.png"></p>
@@ -211,7 +221,7 @@ Don't forget to install the prerequisites for Matplotlib too:
 sudo apt-get install libqtgui4
 ```
 
-After following steps for [installing X client on Windows](#4-install-x-client-for-windows), you should be able to use Matplotlib plots.
+After following steps for [installing X server on Windows](#4-install-x-server-for-windows), you should be able to use Matplotlib plots.
 
 Note: From the X window, if you try to save a plot as an image, you may get the following:
 
@@ -222,10 +232,10 @@ QFileSystemWatcher: failed to add paths: /home/josh
 
 This is [fixed](https://wpdev.uservoice.com/forums/266908-command-prompt-console-bash-on-ubuntu-on-windo/suggestions/13469097-support-for-filesystem-watchers-like-inotify) in Windows 10 Insiders Build 14942. For more information see [here](https://github.com/Microsoft/BashOnWindows/issues/216).
 
-### 4. Install X client for Windows 
+### 4. Install X server for Windows 
 <p align="center"><img src="https://chocolatey.org/content/packageimages/vcxsrv.1.18.3.0.png"></p>
 
-Linux uses [X Window System](https://en.wikipedia.org/wiki/X_Window_System) which uses a server-client model to display GUI applications. In order for us to view these applications on Windows, we will need a X client capable of receiving the communication coming from our Linux's X server.
+Linux uses the [X Window System](https://en.wikipedia.org/wiki/X_Window_System) which uses a server-client model to display GUI applications. In order for us to view these applications on Windows, we will need a X server capable of receiving the communication coming from our Linux's X clients.
 
 There are two main options we can choose from: [VcXsrv](https://sourceforge.net/projects/vcxsrv/) and [Xming](https://sourceforge.net/projects/xming/). Choose whichever one you like. If you run into issues displaying applications in one, try the other. We will use VcXsrv in this guide since some users are reporting Xming to be a bit slower.
 
@@ -235,7 +245,7 @@ There are two main options we can choose from: [VcXsrv](https://sourceforge.net/
 
 #### Configure X and fix dbus
 
-We will need to configure Linux to send X communication to where our Windows' X client is listening at.
+We will need to configure Linux to send X communication to where our Windows' X server is listening at.
 
 1. Open Bash
 2. Type the following command:
@@ -243,7 +253,7 @@ We will need to configure Linux to send X communication to where our Windows' X 
    ```shell
    echo "export DISPLAY=localhost:0.0" >> ~/.bashrc
    ```
-   This is enough to launch X applications to our X client, but many applications will still perform poorly or crash. This happens because Windows 10 Build 14393 does not fully support Unix sockets yet. Later Insider Builds are said to have this fixed already as well.
+   This is enough to launch X applications to our X server, but many applications will still perform poorly or crash. This happens because Windows 10 Build 14393 does not fully support Unix sockets yet. Later Insider Builds are said to have this fixed already as well.
 3. Type the following to change dbus into using TCP instead of Unix sockets:
 
    ```shell
@@ -257,6 +267,11 @@ We will need to configure Linux to send X communication to where our Windows' X 
    sudo apt-get install sublime-text-installer
    subl
    ```
+5. For other X GUI applications (like Firefox), you may also need LibGL.
+  
+  ```shell
+  sudo apt-get install xserver-xorg-video-dummy
+  ```
 
 ### 5. (Optional) Install Command Line power user features
 
