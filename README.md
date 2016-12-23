@@ -351,6 +351,14 @@ Bash is great, but there are quite a few annoying nuances to it like tab complet
       ```
       plugins=(git python sudo)
       ```
+      
+5. (Optional) Disable beeping in the terminal:
+
+      ```shell
+      echo "setopt NO_BEEP" >> ~/.zshrc
+      sudo sh -c 'echo "set bell-style none" >> /etc/inputrc'
+      echo "set visualbell" >> ~/.vimrc
+      ```
 
 #### Install Powerline compatible fonts
 
