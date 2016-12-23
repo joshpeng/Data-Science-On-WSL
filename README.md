@@ -37,14 +37,19 @@ This guide contains notes on setting up a development environment for data scien
 # Quick Start
 After [installing WSL](#2-install-wsl) and installing [VcXsrv](https://sourceforge.net/projects/vcxsrv/) as your X server, run the following commands in Bash. This installs Anaconda, Oh My Zsh, and node. For more detailed information on these fixes, please see the rest of this guide.
 
+For Windows 10 Anniversary Build 14393 users:
+
 ```shell
 sudo apt-get update
+sudo apt-get upgrade
 wget https://repo.continuum.io/archive/Anaconda2-4.2.0-Linux-x86_64.sh
 bash Anaconda2-4.2.0-Linux-x86_64.sh
+conda install -c jzuhone zeromq=4.1.dev0
 conda install matplotlib=1.5.1
 sudo apt-get install zsh git libqtgui4 xserver-xorg-video-dummy
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 echo "export DISPLAY=localhost:0.0" >> ~/.bashrc
+echo "export KMP_AFFINITY=disabled" >> ~/.bashrc
 echo "zsh" >> ~/.bashrc
 sudo sed -i 's$<listen>.*</listen>$<listen>tcp:host=localhost,port=0</listen>$' /etc/dbus-1/session.conf
 sudo apt-get install python-software-properties
@@ -52,18 +57,21 @@ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get install nodejs
 ```
 
-For Insider Build users, congratulations. You are set.
-
-For Anniversary Build 14393 users, please apply this fix:
+For Windows 10 Insider Build 14986 users:
 
 ```shell
-conda install -c jzuhone zeromq=4.1.dev0
-```
-
-Then open up .bashrc and add this line above the `zsh` line.
-
-```
-export KMP_AFFINITY=disabled
+sudo apt-get update
+sudo apt-get upgrade
+wget https://repo.continuum.io/archive/Anaconda2-4.2.0-Linux-x86_64.sh
+bash Anaconda2-4.2.0-Linux-x86_64.sh
+conda install matplotlib=1.5.1
+sudo apt-get install zsh git libqtgui4 xserver-xorg-video-dummy
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+echo "export DISPLAY=localhost:0.0" >> ~/.bashrc
+echo "zsh" >> ~/.bashrc
+sudo apt-get install python-software-properties
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+sudo apt-get install nodejs
 ```
 
 # Bash and Python
@@ -146,7 +154,7 @@ Anaconda is a widely used Python-based data science platform. It comes with a la
 
 #### Fix Jupyter notebooks
 
-In Windows 10 Build 14393, there is an issue with libzmq that is apparently fixed in later Insider Builds. For now though, we will need to do the following command in bash:
+In Windows 10 Build 14393, there is an issue with libzmq that is fixed in later Insider Builds. For now though, we will need to do the following command in bash:
 
 ```shell
 conda install -c jzuhone zeromq=4.1.dev0
@@ -179,7 +187,7 @@ The community does not fully understand the implications of this workaround yet.
 
 ##### Workaround #2 - Disable MKL
 
-MKL is relatively new and you may not necessarily need it. You can switch Anaconda to use non-MKL package versions instead of the MKL ones. For more information on this, see [here](https://docs.continuum.io/mkl-optimizations/#uninstalling-mkl).
+MKL is relatively new and you may not necessarily need it. You can switch Anaconda to use non-MKL (OpenBLAS for Linux) package versions instead of the MKL ones. For more information on this, see [here](https://docs.continuum.io/mkl-optimizations/#uninstalling-mkl).
 
 1. Open Bash
 2. Use the following command:
@@ -199,31 +207,37 @@ With Build 14951, WSL installs Ubuntu 16.04 instead of 14.04. This version suppo
 
 After using one of the options above, you can verify the fix with the following:
 
-```
-python
-import scipy
-scipy.test()
+```shell
+python -c 'import scipy; scipy.test()'
 ```
 
 It should no longer generate the original OMP error messages.
 
 #### Fix Matplotlib
 
-At the time of writing, Anaconda2 v4.2.0 installs ```Matplotlib 1.5.3-np111py27_0``` along with ```pyqt 5.6.0-py27_0``` and ```qt 5.6.0-0```. Unfortunately this version seems bugged and incapable of displaying plot graphs into X windows on WSL. To fix this we need to downgrade them.
+At the time of writing, Anaconda2 v4.2.0 installs ```Matplotlib 1.5.3-np111py27_0``` along with ```pyqt 5.6.0-py27_0``` and ```qt 5.6.0-0```. Unfortunately WSL seems to run into some bugs with qt5.6 that are going to be [fixed in future release qt5.6.3](https://bugreports.qt.io/browse/QTBUG-56419).
 
-```shell
-conda install matplotlib=1.5.1
-```
-
-Don't forget to install the prerequisites for Matplotlib too:
+##### Solution #1 - Downgrade to Matplotlib 1.5.1 and use Qt4
 
 ```shell
 sudo apt-get install libqtgui4
+conda install matplotlib=1.5.1
 ```
 
-After following steps for [installing X server on Windows](#4-install-x-server-for-windows), you should be able to use Matplotlib plots.
+##### Alternate Option - Continue using Matplotlib 1.5.3, ignore Qt5 error
 
-Note: From the X window, if you try to save a plot as an image, you may get the following:
+```shell
+sudo apt-get install libqt5gui5
+```
+
+This is the error you will see when using Matplotlib. No clue what the full extent of implications may be.
+
+```
+QXcbShmImage: shmget() failed (38: Function not implemented) for size 1586872 (602x659)
+```
+
+##### Additional Notes
+On Windows 10 Anniversary Build, from the X window, if you try to save a plot as an image, you may get the following:
 
 ```
 QInotifyFileSystemWatcherEngine::addPaths: inotify_add_watch failed: Invalid argument
@@ -231,6 +245,7 @@ QFileSystemWatcher: failed to add paths: /home/josh
 ```
 
 This is [fixed](https://wpdev.uservoice.com/forums/266908-command-prompt-console-bash-on-ubuntu-on-windo/suggestions/13469097-support-for-filesystem-watchers-like-inotify) in Windows 10 Insiders Build 14942. For more information see [here](https://github.com/Microsoft/BashOnWindows/issues/216).
+
 
 ### 4. Install X server for Windows 
 <p align="center"><img src="https://chocolatey.org/content/packageimages/vcxsrv.1.18.3.0.png"></p>
