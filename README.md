@@ -162,6 +162,14 @@ conda install -c jzuhone zeromq=4.1.dev0
 
 This patches zeromq to work with WSL. If this step is not done, the kernel will keep dying whenever you view a Jupyter notebook resulting in an inability to execute code cells. For more information about this issue, see [here](https://github.com/Microsoft/BashOnWindows/issues/185).
 
+Also, if you see these messages when running ```jupyter notebook``` with a web browser installed:
+
+```shell
+libGL error: No matching fbConfigs or visuals found
+libGL error: failed to load driver: swrast
+```
+You can try ```sudo apt-get install mesa-utils``` to see if that resolves it.
+
 #### Fix MKL
 
 In Windows 10 Build 14393's Ubuntu 14.04, using [MKL](https://software.intel.com/en-us/intel-mkl) optimized packages (NumPy, NumExpr, SciPy, Scikit-Learn) results in the following errors:
