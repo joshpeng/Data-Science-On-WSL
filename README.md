@@ -114,7 +114,7 @@ Cmder is an excellent console emulator for Windows offering many features beyond
 
 ### 2. Install WSL
 
-<p align="center"><img src="http://www.monsterblog.biz/wp-content/uploads/2016/10/windows-vs-ubuntu.png" width="400"></p>
+<p align="center"><img src="https://github.com/joshpeng/Data-Science-On-WSL/raw/master/imgs/windows-vs-ubuntu.png" width="400"></p>
 
 Follow Microsoft's installation guide [here](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide).
 Below are additional notes on WSL you should know about.
@@ -392,7 +392,7 @@ Many Zsh themes use custom characters to display symbols like git branches. To h
 5. Fill in the following for ```Task parameters```:
 
    ```
-   -icon %USERPROFILE%\AppData\Local\lxss\bash.ico"
+   -icon %USERPROFILE%\AppData\Local\lxss\bash.ico
    ```
 
 6. Fill in the following for the task command:
